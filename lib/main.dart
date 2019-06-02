@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Store',
       theme: new ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.purple,
       ),
       home: new MyHomePage(title: 'Stores'),
     );
@@ -78,31 +78,84 @@ class _MyHomePageState extends State<MyHomePage> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    margin: new EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 8.0),
-                    elevation: 4.0,
-                    child: ListTile(
-                      // leading: CircleAvatar(
-                      //   backgroundImage:
-                      //       NetworkImage(snapshot.data[index].picture),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: Card(
+                      // margin: new EdgeInsets.symmetric(
+                      //     horizontal: 10.0, vertical: 8.0),
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(16.0),
+                      ),
+                      elevation: 2.0,
+                      child: InkWell(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ClipRRect(
+                              child: Image.network(
+                                  "https://source.unsplash.com/random/400x400"),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(snapshot.data[index].entityName,
+                                      style: Theme.of(context).textTheme.title),
+                                  SizedBox(height: 10.0),
+                                  Text(snapshot.data[index].county),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(snapshot.data[index].city),
+                                      // Text(snapshot.data[index].state),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailPage(snapshot.data[index])));
+                        },
+                      ),
+                      // child: Container(
+                      //   child: ListTile(
+                      //     // leading: CircleAvatar(
+                      //     //   backgroundImage:
+                      //     //       NetworkImage(snapshot.data[index].picture),
+                      //     // ),
+                      //     leading: Container(
+                      //         margin: EdgeInsets.only(left: 6.0),
+                      //         child: Image.network(
+                      //           'https://source.unsplash.com/random/400x400',
+                      //           height: 50.0,
+                      //           fit: BoxFit.fill,
+                      //         )),
+                      //     title: Text(snapshot.data[index].entityName),
+                      //     subtitle: Text(snapshot.data[index].county),
+                      //     onTap: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           new MaterialPageRoute(
+                      //               builder: (context) =>
+                      //                   DetailPage(snapshot.data[index])));
+                      //     },
+                      //   ),
                       // ),
-                      // leading: Container(
-                      //     margin: EdgeInsets.only(left: 6.0),
-                      //     child: Image.network(
-                      //       'https://source.unsplash.com/random',
-                      //       height: 50.0,
-                      //       fit: BoxFit.fill,
-                      //     )),
-                      title: Text(snapshot.data[index].entityName),
-                      subtitle: Text(snapshot.data[index].county),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailPage(snapshot.data[index])));
-                      },
                     ),
                   );
                 },
