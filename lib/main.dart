@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       stores.add(store);
     }
 
-    print(stores.length);
+    // print(stores.length);
 
     return stores;
   }
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: FutureBuilder(
           future: _getStores(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print(snapshot.data);
+            // print(snapshot.data);
             if (snapshot.data == null) {
               return Center(
                 child: ColorLoader(
