@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Store',
       theme: new ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.grey,
       ),
       home: new MyHomePage(title: 'Stores'),
     );
@@ -59,8 +59,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+      backgroundColor: Colors.white,
+      // appBar: new AppBar(
+      //   title: new Text(widget.title),
+      // ),
+      appBar: AppBar(
+        elevation: 0.1,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: Text('Stores List'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+          )
+        ],
       ),
       body: Container(
         child: FutureBuilder(
@@ -110,12 +123,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Text(snapshot.data[index].entityName,
                                       style: Theme.of(context).textTheme.title),
                                   SizedBox(height: 10.0),
-                                  Text(snapshot.data[index].county),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(snapshot.data[index].city),
+                                      Text(
+                                        snapshot.data[index].county,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      Text(
+                                        ', ' + snapshot.data[index].state,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      // Text(snapshot.data[index].city),
                                       // Text(snapshot.data[index].state),
                                     ],
                                   )
@@ -176,8 +201,157 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-      title: Text(store.entityName),
-    ));
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(left: 10.0),
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      decoration: new BoxDecoration(
+                        image: new DecorationImage(
+                          image: new NetworkImage(
+                              "https://source.unsplash.com/random/400x400"),
+                          fit: BoxFit.cover,
+                        ),
+                      )),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    padding: EdgeInsets.all(40.0),
+                    width: MediaQuery.of(context).size.width,
+                    decoration:
+                        BoxDecoration(color: Color.fromRGBO(58, 66, 80, .8)),
+                    child: Center(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 90.0,
+                        ),
+                        Text(
+                          store.entityName,
+                          style: TextStyle(color: Colors.white, fontSize: 25.0),
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        Text(
+                          store.city + ",  " + store.state,
+                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                        )
+                      ],
+                    )),
+                  ),
+                  Positioned(
+                    left: 15.0,
+                    top: 25.0,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.arrow_back, color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(40.0),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "County : " + store.county,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "License number : " + store.licenseNumber.toString(),
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Operation type : " + store.operationType,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Establishment type : " + store.establishmentType,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Entity name : " + store.entityName,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "DBA name : " + store.dbaName,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Street number : " + store.streetNumber.toString(),
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Street name : " + store.streetName,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "City : " + store.city,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "State : " + store.state,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Zip code : " + store.zipCode.toString(),
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Text(
+                        "Square footage : " + store.squareFootage.toString(),
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
