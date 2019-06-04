@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/color_loader.dart';
 import 'package:flutter_store/resources/store_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'detail.dart';
 
@@ -72,8 +74,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             ClipRRect(
-                              child: Image.network(
-                                  "https://source.unsplash.com/random/400x400"),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "https://source.unsplash.com/random/400x400",
+                                placeholder: (context, url) => SizedBox(
+                                      width: 300.0,
+                                      height: 320.0,
+                                      child: Shimmer.fromColors(
+                                          baseColor: Colors.grey[300],
+                                          highlightColor: Colors.grey[100],
+                                          child: Container(
+                                            color: Colors.white,
+                                          )),
+                                    ),
+                              ),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(16.0),
                                 topRight: Radius.circular(16.0),
