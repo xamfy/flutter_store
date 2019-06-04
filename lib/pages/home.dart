@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_store/models/store.dart';
-import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../widgets/color_loader.dart';
+import 'package:flutter_store/resources/store_provider.dart';
 
 import 'detail.dart';
 
@@ -24,28 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Colors.pinkAccent,
     Colors.blue
   ];
-  Future<List<Store>> _getStores(http.Client client) async {
-    var response = await client.get("http://switchip.herokuapp.com/stores");
-    if (response.statusCode == 200) {
-      // If the call to the server was successful, parse the JSON
-      var jsonData = json.decode(response.body);
-
-      List<Store> stores = [];
-
-      for (var u in jsonData) {
-        Store store = Store.fromJson(u);
-
-        stores.add(store);
-      }
-
-      // print(stores.length);
-
-      return stores;
-    } else {
-      // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         child: FutureBuilder(
-          future: _getStores(http.Client()),
+          future: getStores(http.Client()),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             // print(snapshot.data);
             if (snapshot.data == null) {
