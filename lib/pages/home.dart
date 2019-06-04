@@ -1,36 +1,157 @@
 import 'package:flutter/material.dart';
-import '../repository/store_repository.dart';
-import '../models/store.dart';
-import '../widgets/store_tile.dart';
+import 'package:flutter_store/models/store.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../widgets/color_loader.dart';
 
-class Home extends StatefulWidget {
+import 'detail.dart';
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
   @override
-  _HomeState createState() => _HomeState();
+  _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _HomeState extends State<Home> {
-  List<Store> _stores = <Store>[];
+class _MyHomePageState extends State<MyHomePage> {
+  List<Color> colors = [
+    Colors.red,
+    Colors.green,
+    Colors.indigo,
+    Colors.pinkAccent,
+    Colors.blue
+  ];
+  Future<List<Store>> _getStores(http.Client client) async {
+    var response = await client.get("http://switchip.herokuapp.com/stores");
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      var jsonData = json.decode(response.body);
 
-  @override
-  void initState() {
-    super.initState();
-    listenForStores();
+      List<Store> stores = [];
+
+      for (var u in jsonData) {
+        Store store = Store.fromJson(u);
+
+        stores.add(store);
+      }
+
+      // print(stores.length);
+
+      return stores;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Stores'),
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      backgroundColor: Colors.white,
+      // appBar: new AppBar(
+      //   title: new Text(widget.title),
+      // ),
+      appBar: AppBar(
+        elevation: 0.1,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: Text('Stores List'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {},
+          )
+        ],
+      ),
+      body: Container(
+        child: FutureBuilder(
+          future: _getStores(http.Client()),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            // print(snapshot.data);
+            if (snapshot.data == null) {
+              return Center(
+                child: ColorLoader(
+                  colors: colors,
+                  duration: Duration(milliseconds: 1200),
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: Card(
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(16.0),
+                      ),
+                      elevation: 2.0,
+                      child: InkWell(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            ClipRRect(
+                              child: Image.network(
+                                  "https://source.unsplash.com/random/400x400"),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(snapshot.data[index].entityName,
+                                      style: Theme.of(context).textTheme.title),
+                                  SizedBox(height: 10.0),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        snapshot.data[index].county,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      Text(
+                                        ', ' + snapshot.data[index].state,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailPage(snapshot.data[index])));
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          },
         ),
-        body: ListView.builder(
-          itemCount: _stores.length,
-          itemBuilder: (context, index) => StoreTile(_stores[index]),
-        ),
-      );
-
-  void listenForStores() async {
-    final Stream<Store> stream = await getStores();
-    stream.listen((Store store) => setState(() => _stores.add(store)));
+      ),
+    );
   }
 }
